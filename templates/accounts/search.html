@@ -1,0 +1,84 @@
+{% extends "base/base.html" %}
+
+{% block start %}
+<style>
+    /* Add your custom styles for index.html here */
+
+    /* Product Cards */
+    .card-product-grid {
+        border: 1px solid #eee;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card-product-grid:hover {
+        transform: scale(1.05);
+    }
+
+    .card-product-grid .img-wrap {
+        overflow: hidden;
+        position: relative;
+        height: 250px;
+    }
+
+    .card-product-grid img {
+        max-width: 100%;
+        height: auto;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card-product-grid:hover img {
+        transform: scale(1.1);
+    }
+
+    .card-product-grid .info-wrap {
+        padding: 10px;
+    }
+
+    .card-product-grid .title {
+        font-weight: bold;
+        color: #333;
+        text-decoration: none;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .card-product-grid .title:hover {
+        color: #17a2b8;
+    }
+
+    .card-product-grid .price {
+        color: #17a2b8;
+        font-size: 18px;
+        margin-top: 10px;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        .card-product-grid {
+            flex-basis: calc(50% - 10px);
+        }
+    }
+</style>
+
+<!-- Your content goes here -->
+
+<div class="container mt-5 pt-5">
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-3">
+            <figure class="card card-product-grid">
+                <div class="img-wrap">
+                    <img src="/media/{{product.product_images.first.image}}">
+                </div>
+                <figcaption class="info-wrap border-top">
+                    <a href="{% url 'get_product' product.slug %}" class="title">
+                        <b>{{product.product_name}}</b>
+                    </a>
+                    <div class="price mt-2">₹{{product.price}}</div>
+                </figcaption>
+            </figure>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

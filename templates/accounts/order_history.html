@@ -1,0 +1,63 @@
+{% extends 'base/base.html' %}
+
+{% block start %}
+<div class="container mt-5">
+  <h2>Order History</h2>
+  <!-- Display user's ordered items -->
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ordered_item in ordered_items %}
+        <tr>
+          <td>{{ ordered_item.product.product_name }}</td>
+          <td>₹{{ ordered_item.product.price }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Recommendation System -->
+  <h2>Recommended for You</h2>
+  <div id="recommendedForYouSection">
+    <!-- JavaScript will dynamically update this section -->
+    
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // JavaScript code for dynamically updating the Recommended for You section
+    var recommendedProducts = [
+      {% for recommended_product in recommended_products %}
+        { name: "{{ recommended_product.product_name }}", price: "{{ recommended_product.price }}" },
+      {% endfor %}
+    ];
+  
+    var recommendedForYouSection = document.getElementById('recommendedForYouSection');
+  
+    function updateRecommendedForYou() {
+      // Shuffle the products array
+      var shuffledProducts = recommendedProducts.sort(() => Math.random() - 0.5);
+  
+      // Display the first 3 recommended products
+      recommendedForYouSection.innerHTML = '';
+      for (var i = 0; i < 3; i++) {
+        var recommendedProduct = shuffledProducts[i];
+        var productItem = document.createElement('p');
+        productItem.textContent = recommendedProduct.name + ' - ₹' + recommendedProduct.price;
+        recommendedForYouSection.appendChild(productItem);
+      }
+    }
+  
+    // Initial update
+    updateRecommendedForYou();
+  });
+  </script>
+
+
+{% endblock %}

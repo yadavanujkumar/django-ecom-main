@@ -1,0 +1,121 @@
+{% extends "base/base.html"%}
+
+{% block start %}
+<section class="section-content padding-y bg">
+  <div class="container">
+    <div class="card">
+      <div class="row no-gutters">
+        <aside class="col-md-6">
+          <!-- Product Image Carousel -->
+          <div id="product-image-carousel" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+              {% for image in product.product_images.all %}
+                <li data-target="#product-image-carousel" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+              {% endfor %}
+            </ol>
+            <div class="carousel-inner">
+              {% for image in product.product_images.all %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                  <img src="/media/{{ image.image }}" class="d-block w-100" alt="Product Image">
+                </div>
+              {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#product-image-carousel" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#product-image-carousel" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+          <!-- End Product Image Carousel -->
+        </aside>
+        <main class="col-md-6 border-left">
+          <article class="content-body">
+            <h2 class="title">{{product.product_name}}</h2>
+            <div class="rating-wrap my-3">
+              <ul class="rating-stars">
+                <li style="width: 80%" class="stars-active">
+                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                </li>
+                <li>
+                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                </li>
+              </ul>
+              <small class="label-rating text-muted">132 reviews</small>
+              <small class="label-rating text-success">
+                <i class="fa fa-clipboard-check"></i> 154 orders
+              </small>
+            </div>
+            <div class="mb-3"> 
+              <var class="price h4">₹
+                {%if update_price%}
+                {{update_price}}
+                {% else %}
+                {{product.price}}
+                {% endif %}
+              </var>
+            </div> 
+            <p>{{product.product_desription}}</p>
+            <dl class="row">
+              <dt class="col-sm-3">Model :</dt>
+              <dd class="col-sm-9">{{product.product_name}}</dd>
+              <!-- <dt class="col-sm-3">Color</dt>
+              <dd class="col-sm-9">Brown</dd> -->
+              <dt class="col-sm-3">Delivery</dt>
+              <dd class="col-sm-9">Mumbai-central, Nerul, and Dharavi</dd>
+            </dl>
+            <hr />
+            <div class="form-row">
+              <div class="form-group col-md flex-grow-0">
+               <!--  <label>Quantity</label>
+                <div class="input-group mb-3 input-spinner">
+                  <div class="input-group-prepend">
+                    <button class="btn btn-light" type="button" id="button-plus">+</button>
+                  </div>
+                  <input type="text" class="form-control" value="1" />
+                  <div class="input-group-append">
+                    <button class="btn btn-light" type="button" id="button-minus">-</button>
+                  </div>
+                </div> -->
+              </div>
+              {% if product.size_variant.count %}
+              <div class="form-group col-md">
+                <label>Select size</label>
+                <div class="mt-1">
+                  {% for size in product.size_variant.all %}
+                  <label class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" onchange="get_correct_price('{{size.size_name}}')" name="select_size" {% if selected_size == size.size_name %} checked {% endif %} class="custom-control-input">
+                    <div class="custom-control-label">{{size.size_name}}</div>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+            <a href="{% url 'add_to_cart' product.uid %}?variant={{selected_size}}" class="btn btn-primary">Buy now</a>
+            <a href="{% url 'add_to_cart' product.uid %}?variant={{selected_size}}" class="btn btn-outline-primary">
+              <span class="text">Add to cart</span>
+              <i class="fas fa-shopping-cart"></i>
+            </a>
+            <!-- <a href="{% url 'compare_products' %}?product_id={{ product.id }}" class="btn btn-primary">Compare</a> -->
+            <a href="{% url 'compare_products' %}?product_slug1={{ product.slug }}&product_slug2={{ another_product.slug }}">Compare with another product</a>
+          </article>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function get_correct_price(size) {
+    window.location.href = window.location.pathname + `?size=${size}`;
+  }
+</script>
+
+{% endblock %}

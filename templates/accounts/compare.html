@@ -1,0 +1,167 @@
+{% extends "base/base.html"%}
+
+{% block start %}
+
+<style>
+  .comparison-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .compare-form {
+    width: 100%;
+    max-width: 300px;
+    margin-right: 20px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  select, button {
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  .product-card {
+    flex-basis: calc(50% - 20px);
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .product-card:hover {
+    transform: scale(1.05);
+  }
+
+  h2, h3, h4 {
+    color: #333;
+  }
+  
+
+  .carousel-inner img {
+    max-width: 60%;
+    height: auto;
+    max-height: 150px; /* Adjusted max height */
+  }
+</style>
+
+
+<section class="section-content padding-y bg">
+  <div class="container">
+    <div class="card">
+      <div class="row no-gutters">
+        <aside class="col-md-6">
+          <!-- Product Image Carousel -->
+          <div id="product-image-carousel" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+              {% for image in product.product_images.all %}
+                <li data-target="#product-image-carousel" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+              {% endfor %}
+            </ol>
+            <div class="carousel-inner">
+              {% for image in product.product_images.all %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                  <img src="/media/{{ image.image }}" class="d-block w-100" alt="Product Image">
+                </div>
+              {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#product-image-carousel" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#product-image-carousel" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+          <!-- End Product Image Carousel -->
+        </aside>
+        <main class="col-md-6 border-left">
+          <article class="content-body">
+            <h2 class="title">{{product.product_name}}</h2>
+            <!-- Product Details Content -->
+            <!-- ... (rest of your product details content) ... -->
+            <!-- End Product Details Content -->
+          </article>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function get_correct_price(size) {
+    window.location.href = window.location.pathname + `?size=${size}`;
+  }
+</script>
+
+<div class="comparison-container">
+  <form method="GET" action="{% url 'compare_products' %}" class="compare-form">
+
+    <h2>Compare Products</h2>
+    <label for="product1">Select Product 1:</label>
+    <select name="product_slug1" id="product1">
+      {% for product in products %}
+        <option value="{{ product.slug }}">{{ product.product_name }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="product2">Select Product 2:</label>
+    <select name="product_slug2" id="product2">
+      {% for product in products %}
+        <option value="{{ product.slug }}">{{ product.product_name }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit">Compare</button>
+  </form>
+
+  {% if product1 and product2 %}
+    <h3>Comparison Results:</h3>
+
+    <div class="product-card">
+      <h4>{{ product1.product_name }}</h4>
+      <div id="product1-carousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          {% for image in product1.product_images.all %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <img src="/media/{{ image.image }}" class="d-block w-100" alt="Product Image">
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <p>Price: {{ product1.price }}</p>
+      <p>Description: {{ product1.product_description }}</p>
+    </div> <br>
+
+    <div class="product-card">
+      <h4>{{ product2.product_name }}</h4>
+      <div id="product2-carousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          {% for image in product2.product_images.all %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <img src="/media/{{ image.image }}" class="d-block w-100" alt="Product Image">
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <p>Price: {{ product2.price }}</p>
+      <p>Description: {{ product2.product_description }}</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

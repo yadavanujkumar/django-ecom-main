@@ -1,0 +1,16 @@
+<!-- view_ratings.html -->
+
+{% extends 'base/base.html' %}
+
+{% block content %}
+  <h2>Website Ratings</h2>
+  {% if error %}
+    <p>Error: {{ error }}</p>
+  {% else %}
+    <ul>
+      {% for rating in ratings %}
+        <li>{{ rating.user.username }} - {{ rating.rating }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}

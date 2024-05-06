@@ -133,6 +133,10 @@ STATICFILES_DIR = {
     os.path.join(BASE_DIR , "public/static")
 }
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 3600  # Set session cookie age to 1 hour (optional)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Ensure sessions persist even after browser is closed
+
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'public/static') 
 MEDIA_URL = '/media/'
 

@@ -3,28 +3,27 @@ from django.http import JsonResponse
 from .models import ChatMessage
 
 def chatbot(request):
+    if 'chat_history' not in request.session:
+        request.session['chat_history'] = []
+
     if request.method == 'POST':
         user = request.POST.get('user')
         message = request.POST.get('message')
         ChatMessage.objects.create(user=user, message=message)
+        # Add the message to the chat history stored in the session
+        request.session['chat_history'].append({'user': user, 'message': message})
+        
         # Add your chatbot logic here and get a response
-        # response = "This is a dummy response."
         response = get_manual_response(message)
+        # Add the chatbot response to the chat history stored in the session
+        request.session['chat_history'].append({'user': 'Chatbot', 'message': response})
+
         return JsonResponse({'response': response})
-    return render(request, 'chatbot/chat.html')
 
-# def manual_chatbot(request):
-#     if request.method == 'POST':
-#         user = request.POST.get('user')
-#         message = request.POST.get('message')
-#         ChatMessage.objects.create(user=user, message=message)
+    # Pass the chat history to the template
+    chat_history = request.session.get('chat_history', [])
+    return render(request, 'chatbot/chat.html', {'chat_history': chat_history})
 
-#         # Manually handle responses based on user input
-#         response = get_manual_response(message)
-
-#         return JsonResponse({'response': response})
-    
-#     return render(request, 'chatbot/chat.html')
 
 def get_manual_response(user_input):
     # Add more response logic based on common e-commerce queries

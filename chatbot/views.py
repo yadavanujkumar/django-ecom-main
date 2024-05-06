@@ -44,5 +44,11 @@ def get_manual_response(user_input):
         return "We accept various payment methods, including credit cards, UPI, and more. You can find details during checkout."
     elif "account" in user_input.lower():
         return "To manage your account, log in to your profile. You can update personal information, track orders, and more."
+    elif "hey" in user_input.lower():
+        return "hey,How can I assist you today?"
+    elif "hello" in user_input.lower():
+        return "hello,How can I assist you today?"
+    elif "hi" in user_input.lower():
+        return "hii,How can I assist you today?"
     else:
         return "I'm sorry, I didn't understand that. How can I assist you today?"

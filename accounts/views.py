@@ -353,8 +353,6 @@ def remove_coupon(request, cart_id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-
-
 def success(request):
     order_id = request.GET.get('order_id')
     cart = Cart.objects.get(razor_pay_order_id=order_id)
@@ -440,10 +438,37 @@ def order_history(request):
 #     except CartItems.DoesNotExist:
 #         return render(request, 'accounts/order_history.html', {})
 
+""" @login_required
+def user_details(request):
+    user = request.user
+    return render(request, 'accounts/user_details.html', {'user': user}) """
+    
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from accounts.forms import UserDetailsForm, AddressForm
+
+from django.contrib import messages
+
 @login_required
 def user_details(request):
     user = request.user
-    return render(request, 'accounts/user_details.html', {'user': user})
+    address = user.address
+    if request.method == 'POST':
+        user_form = UserDetailsForm(request.POST, instance=user)
+        address_form = AddressForm(request.POST, instance=address)
+        if user_form.is_valid() and address_form.is_valid():
+            user_form.save()
+            address_form.save()
+            messages.success(request, 'Your details have been updated successfully!')
+            return redirect('user_details')
+    else:
+        user_form = UserDetailsForm(instance=user)
+        address_form = AddressForm(instance=address)
+    
+    return render(request, 'accounts/user_details.html', {'user': user, 'user_form': user_form, 'address_form': address_form})
+
 
 def contact_us(request):
     if request.method == 'POST':

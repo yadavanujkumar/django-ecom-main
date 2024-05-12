@@ -17,17 +17,16 @@ from django.http import JsonResponse
 from django.db.models import Count, F
 from .forms import WebsiteRatingForm
 from .models import WebsiteRating
-
-
-
-
+from django.shortcuts import render
+from django.http import HttpResponse
+from products.models import Product
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from django.contrib.auth.decorators import login_required
-
 from django.conf import settings
+from random import shuffle
 
 
 def search(request):
@@ -52,11 +51,7 @@ def search(request):
 
 
 
-from django.shortcuts import render
 
-from django.shortcuts import render
-from django.http import HttpResponse
-from products.models import Product
 
 def compare_products(request):
     products = Product.objects.all()
@@ -79,7 +74,6 @@ def compare_products(request):
     return render(request, 'accounts/compare.html', context)
 
 
-from random import shuffle
 def index(request):
     products = Product.objects.all()
     shuffled_products = list(products)
